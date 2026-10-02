@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>48° Degrees — Kuwait Specialty Coffee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sand:#EFE7D8; --paper:#FBF7EF; --ink:#241A14;
+    --rust:#A6521E; --teal:#1F4E4A; --taupe:#8A7A66; --line:#DCD2BC;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--sand);color:var(--ink);font-family:"IBM Plex Sans",sans-serif;line-height:1.55;}
+  h1,h2,h3,.serif{font-family:"Fraunces",serif;font-weight:600;margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+  .article-wrap{max-width:760px;margin:0 auto;padding:0 32px;}
+
+  /* ---------- Header (shared) ---------- */
+  header{border-bottom:1px solid var(--line);background:var(--sand);position:sticky;top:0;z-index:10;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;max-width:1180px;margin:0 auto;}
+  .logo{font-family:"Fraunces",serif;font-size:22px;font-weight:700;letter-spacing:-0.01em;cursor:pointer;}
+  .logo span{color:var(--rust);}
+  nav{display:flex;gap:28px;font-size:14.5px;}
+  nav a{text-decoration:none;color:var(--ink);border-bottom:2px solid transparent;padding-bottom:2px;cursor:pointer;}
+  nav a:hover, nav a.current{border-bottom-color:var(--rust);}
+  .nav-cta{
+    padding:9px 16px;border:1px solid var(--ink);font-size:13.5px;text-decoration:none;cursor:pointer;
+  }
+  .nav-cta:hover{background:var(--ink);color:var(--paper);}
+
+  /* ---------- Buttons (shared) ---------- */
+  .btn{
+    display:inline-block;padding:12px 22px;border-radius:2px;
+    font-size:14.5px;font-weight:500;text-decoration:none;
+    border:1px solid var(--ink);cursor:pointer;background:none;font-family:"IBM Plex Sans",sans-serif;
+  }
+  .btn-solid{background:var(--ink);color:var(--paper);}
+  .btn-solid:hover{background:var(--rust);border-color:var(--rust);}
+  .btn-outline{color:var(--ink);}
+  .btn-outline:hover{background:var(--paper);}
+  .btn[disabled]{opacity:.35;cursor:not-allowed;}
+
+  /* ---------- Views ---------- */
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ================= HOME VIEW ================= */
+  .hero{padding:72px 0 56px;}
+  .hero-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:56px;align-items:end;}
+  .hero h1{font-size:clamp(38px,5vw,60px);line-height:1.04;letter-spacing:-0.015em;}
+  .hero p.lede{margin-top:22px;max-width:52ch;font-size:18px;color:#4A3B2E;}
+  .hero-actions{margin-top:30px;display:flex;gap:14px;}
+  .hero-card{
+    background:var(--teal);color:var(--paper);padding:34px;aspect-ratio:4/5;
+    display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;
+  }
+  .hero-card .tag{font-size:13px;opacity:.85;}
+  .hero-card .stat{font-family:"Fraunces",serif;font-size:64px;line-height:1;margin-top:14px;}
+  .hero-card .stat-label{font-size:14px;margin-top:8px;max-width:22ch;opacity:.9;}
+  .hero-card .cup{position:absolute;right:-30px;bottom:-30px;width:220px;height:220px;border:2px solid rgba(251,247,239,.18);border-radius:50%;}
+  .hero-card .cup::before{content:"";position:absolute;inset:34px;border:2px solid rgba(251,247,239,.14);border-radius:50%;}
+
+  .section{padding:52px 0;border-top:1px solid var(--line);}
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:30px;flex-wrap:wrap;gap:12px;}
+  .section-head h2{font-size:28px;letter-spacing:-0.01em;}
+  .section-head .view-all{font-size:14px;color:var(--rust);text-decoration:none;border-bottom:1px solid transparent;cursor:pointer;}
+  .section-head .view-all:hover{border-bottom-color:var(--rust);}
+
+  .post-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  .post-card{display:flex;flex-direction:column;cursor:pointer;}
+  .post-thumb{aspect-ratio:4/3;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin-bottom:16px;position:relative;}
+  .post-thumb .mark{font-family:"Fraunces",serif;font-size:15px;color:var(--taupe);}
+  .post-cat{font-size:12.5px;color:var(--rust);font-weight:600;margin-bottom:8px;}
+  .post-card h3{font-size:19px;line-height:1.3;margin-bottom:8px;}
+  .post-card p{font-size:14.5px;color:#5A4C3D;margin:0;}
+  .post-meta{margin-top:14px;font-size:13px;color:var(--taupe);}
+
+  .nb-strip{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;}
+  .nb-chip{flex:0 0 auto;padding:9px 18px;border:1px solid var(--ink);font-size:14px;white-space:nowrap;cursor:pointer;background:transparent;font-family:"IBM Plex Sans",sans-serif;}
+  .nb-chip.active{background:var(--ink);color:var(--paper);}
+
+  .directory-tools{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;}
+  select{padding:10px 14px;border:1px solid var(--ink);background:var(--paper);font-family:"IBM Plex Sans",sans-serif;font-size:14px;color:var(--ink);}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;}
+  thead th{text-align:left;font-weight:600;padding:10px 14px;border-bottom:2px solid var(--ink);font-size:13px;color:var(--taupe);}
+  tbody td{padding:14px;border-bottom:1px solid var(--line);}
+  tbody tr:hover{background:var(--paper);}
+  .brand-cell{font-weight:600;}
+  .tier{display:inline-block;padding:3px 9px;font-size:12.5px;border:1px solid var(--taupe);color:var(--taupe);}
+
+  .spotlight{background:var(--paper);border:1px solid var(--line);display:grid;grid-template-columns:0.9fr 1.1fr;gap:0;}
+  .spotlight-visual{background:var(--rust);min-height:280px;position:relative;}
+  .spotlight-visual::after{content:"";position:absolute;left:24px;top:24px;right:24px;bottom:24px;border:1px solid rgba(251,247,239,.35);}
+  .spotlight-body{padding:40px;}
+  .spotlight-body .kicker{font-size:13px;color:var(--rust);font-weight:600;margin-bottom:10px;}
+  .spotlight-body h3{font-size:26px;margin-bottom:14px;}
+  .spotlight-body p{font-size:15px;color:#4A3B2E;margin:0 0 20px;}
+
+  /* ================= REVIEW VIEW ================= */
+  .breadcrumb{font-size:13px;color:var(--taupe);margin:36px 0 18px;}
+  .breadcrumb a{text-decoration:none;color:var(--taupe);cursor:pointer;}
+  .breadcrumb a:hover{color:var(--rust);}
+  .article-hero h1{font-size:clamp(32px,4.4vw,48px);line-height:1.08;letter-spacing:-0.015em;}
+  .lede{font-size:19px;color:#4A3B2E;margin-top:20px;max-width:56ch;}
+  .meta-row{display:flex;gap:24px;flex-wrap:wrap;margin-top:26px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:13.5px;color:var(--taupe);}
+  .meta-row div{display:flex;flex-direction:column;gap:3px;}
+  .meta-row .label{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:#A69880;}
+  .meta-row .value{color:var(--ink);font-size:14.5px;font-weight:500;}
+  .hero-image{aspect-ratio:16/9;background:var(--teal);margin:36px 0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+  .hero-image .mark{font-family:"Fraunces",serif;color:var(--paper);font-size:22px;opacity:.9;}
+  .hero-image .ring{position:absolute;width:340px;height:340px;border:1px solid rgba(251,247,239,.18);border-radius:50%;}
+  .hero-image .ring.r2{width:220px;height:220px;}
+  .caption{font-size:12.5px;color:var(--taupe);margin-top:10px;}
+  .body-copy p{font-size:17px;margin:0 0 22px;color:#33261D;}
+  .body-copy h2{font-size:24px;margin:44px 0 16px;}
+  .pull-quote{border-left:3px solid var(--rust);padding:4px 0 4px 26px;margin:36px 0;}
+  .pull-quote p{font-family:"Fraunces",serif;font-size:23px;line-height:1.35;color:var(--ink);margin:0;font-weight:500;}
+  .pull-quote span{display:block;margin-top:10px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--taupe);}
+  .info-box{background:var(--sand);border:1px solid var(--line);padding:28px 30px;margin:40px 0;}
+  .info-box h3{font-size:16px;margin-bottom:18px;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 28px;font-size:14.5px;}
+  .info-grid .k{color:var(--taupe);font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;}
+  .info-grid .v{margin-top:3px;font-weight:500;}
+  .verdict{display:flex;gap:22px;align-items:center;background:var(--ink);color:var(--sand);padding:26px 30px;margin:40px 0;}
+  .verdict .score{font-family:"Fraunces",serif;font-size:44px;color:var(--rust);line-height:1;}
+  .verdict .score-label{font-size:12px;color:#C9BBA8;margin-top:4px;}
+  .verdict .verdict-text{font-size:15px;color:#E8DFCF;line-height:1.55;}
+  .verdict .verdict-text strong{color:var(--paper);}
+  .tags{display:flex;gap:10px;flex-wrap:wrap;margin:36px 0 60px;}
+  .tags a{font-size:13px;padding:7px 14px;border:1px solid var(--taupe);color:var(--taupe);text-decoration:none;}
+  .tags a:hover{border-color:var(--rust);color:var(--rust);}
+  .related{border-top:1px solid var(--line);padding:52px 0;background:var(--paper);}
+  .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .related-card .thumb{aspect-ratio:4/3;background:var(--sand);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+  .related-card .thumb span{font-family:"Fraunces",serif;font-size:14px;color:var(--taupe);}
+  .related-card h4{font-size:16px;line-height:1.3;margin-bottom:6px;}
+  .related-card p{font-size:13px;color:var(--taupe);margin:0;}
+
+  /* ================= SUBMIT VIEW ================= */
+  .intro{padding:64px 0 40px;}
+  .intro-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:start;}
+  .intro h1{font-size:clamp(32px,4.4vw,46px);line-height:1.06;letter-spacing:-0.015em;}
+  .intro p.lede2{margin-top:20px;font-size:17px;color:#4A3B2E;max-width:52ch;}
+  .tier-cards{display:flex;flex-direction:column;gap:14px;}
+  .tier-card{border:1px solid var(--line);background:var(--paper);padding:22px 24px;}
+  .tier-card.featured{border-color:var(--rust);position:relative;}
+  .tier-card .badge{position:absolute;top:-11px;right:20px;background:var(--rust);color:var(--paper);font-size:11.5px;padding:4px 10px;letter-spacing:.02em;}
+  .tier-card h3{font-size:17px;}
+  .tier-card .price{font-family:"Fraunces",serif;font-size:22px;margin-top:6px;}
+  .tier-card .price span{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--taupe);font-weight:400;}
+  .tier-card ul{margin:14px 0 0;padding-left:18px;font-size:13.5px;color:#4A3B2E;}
+  .tier-card li{margin-bottom:5px;}
+  .form-section{border-top:1px solid var(--line);padding:52px 0 80px;}
+  .form-shell{max-width:760px;margin:0 auto;background:var(--paper);border:1px solid var(--line);}
+  .stepper{display:flex;border-bottom:1px solid var(--line);}
+  .step{flex:1;padding:20px 18px;border-right:1px solid var(--line);position:relative;}
+  .step:last-child{border-right:none;}
+  .step .num{font-family:"Fraunces",serif;font-size:20px;color:var(--taupe);}
+  .step.active .num{color:var(--rust);}
+  .step.done .num::after{content:" ✓";color:var(--teal);font-family:"IBM Plex Sans",sans-serif;}
+  .step .step-label{font-size:12.5px;margin-top:4px;color:var(--taupe);}
+  .step.active .step-label{color:var(--ink);font-weight:500;}
+  .form-body{padding:40px;}
+  .form-body h2{font-size:22px;margin-bottom:6px;}
+  .form-sub{font-size:14px;color:var(--taupe);margin-bottom:30px;}
+  .field{margin-bottom:22px;}
+  .field label{display:block;font-size:13px;font-weight:500;margin-bottom:7px;color:#4A3B2E;}
+  .field .hint{font-size:12px;color:var(--taupe);margin-top:5px;}
+  .field input, .field select, .field textarea{width:100%;padding:11px 14px;border:1px solid #C9BBA0;background:var(--sand);font-family:"IBM Plex Sans",sans-serif;font-size:14.5px;color:var(--ink);}
+  .field textarea{resize:vertical;min-height:90px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .photo-drop{border:1.5px dashed #C9BBA0;padding:34px;text-align:center;color:var(--taupe);font-size:13.5px;}
+  .photo-drop strong{display:block;color:var(--ink);font-size:14.5px;margin-bottom:5px;}
+  .form-actions{display:flex;justify-content:space-between;margin-top:36px;}
+  .review-summary{background:var(--sand);border:1px solid var(--line);padding:20px 22px;margin-bottom:26px;font-size:13.5px;}
+  .review-summary .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);}
+  .review-summary .row:last-child{border-bottom:none;}
+  .review-summary .k{color:var(--taupe);}
+  .review-summary .v{font-weight:500;}
+  .success-panel{padding:60px 40px;text-align:center;}
+  .success-panel .mark2{width:56px;height:56px;border:1.5px solid var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--teal);font-size:24px;}
+  .success-panel h2{font-size:24px;margin-bottom:10px;}
+  .success-panel p{font-size:14.5px;color:var(--taupe);max-width:42ch;margin:0 auto 26px;}
+
+  /* ================= FOOTER (shared) ================= */
+  footer{border-top:1px solid var(--line);padding:52px 0 40px;background:var(--ink);color:var(--sand);}
+  .footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:40px;}
+  footer h3{color:var(--paper);font-size:20px;margin-bottom:12px;}
+  footer > .wrap > .footer-grid > div > p{color:#C9BBA8;font-size:14px;max-width:38ch;}
+  .newsletter-form{display:flex;margin-top:18px;max-width:360px;}
+  .newsletter-form input{flex:1;padding:11px 14px;border:1px solid #4A3B2E;background:transparent;color:var(--sand);font-family:"IBM Plex Sans",sans-serif;font-size:14px;}
+  .newsletter-form button{padding:11px 18px;background:var(--rust);color:var(--paper);border:none;font-size:14px;cursor:pointer;}
+  .foot-col h4{color:var(--paper);font-size:14px;margin-bottom:14px;font-weight:600;}
+  .foot-col a{display:block;color:#C9BBA8;text-decoration:none;font-size:14px;margin-bottom:10px;cursor:pointer;}
+  .foot-col a:hover{color:var(--paper);}
+  .foot-bottom{margin-top:44px;padding-top:24px;border-top:1px solid #3A2E24;font-size:12.5px;color:#8A7A66;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-card{aspect-ratio:auto;padding:26px;}
+    .post-grid{grid-template-columns:1fr 1fr;}
+    .spotlight{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;}
+    nav{display:none;}
+    .intro-grid{grid-template-columns:1fr;}
+    .stepper{flex-wrap:wrap;}
+    .step{flex:1 1 33%;border-bottom:1px solid var(--line);}
+    .form-body{padding:26px;}
+    .field-row{grid-template-columns:1fr;}
+    .info-grid{grid-template-columns:1fr;}
+    .related-grid{grid-template-columns:1fr;}
+    .verdict{flex-direction:column;align-items:flex-start;}
+  }
+  @media (max-width:560px){
+    .post-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo" onclick="goTo('home')">48<span>°</span> Degrees</div>
+    <nav>
+      <a onclick="goTo('review')">Reviews</a>
+      <a onclick="goTo('home','directory')">Directory</a>
+      <a onclick="goTo('home','neighbourhoods')">Neighbourhoods</a>
+      <a onclick="goTo('home','roasters')">Roasters</a>
+      <a onclick="goTo('home','about')">About</a>
+      <a class="nav-cta" onclick="goTo('submit')">Get listed</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- HOME VIEW -->
+<!-- ============================================================ -->
+<div class="view active" id="view-home">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Kuwait runs on coffee that used to run on Starbucks.</h1>
+        <p class="lede">A field guide to the roasters, brew bars and neighbourhood cafés remaking Kuwait's coffee scene — one cupping, one V60, one converted Shuwaikh warehouse at a time.</p>
+        <div class="hero-actions">
+          <a class="btn btn-solid" onclick="goTo('home','directory')">Browse the directory</a>
+          <a class="btn btn-outline" onclick="goTo('review')">Read the latest</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div>
+          <div class="tag">Right now in the directory</div>
+          <div class="stat">60+</div>
+          <div class="stat-label">specialty cafés and roasteries tracked across 15 neighbourhoods</div>
+        </div>
+        <div class="tag">Updated weekly · Shuwaikh Industrial to Salmiya</div>
+        <div class="cup"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reviews">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Latest reviews</h2>
+        <a class="view-all" onclick="goTo('review')">All reviews</a>
+      </div>
+      <div class="post-grid">
+        <article class="post-card" onclick="goTo('review')">
+          <div class="post-thumb"><span class="mark">Vol.1 Roast Lab</span></div>
+          <div class="post-cat">Outlet review</div>
+          <h3>Inside Vol.1's Mariam Tower roast lab, where the cereal cold brew has a cult following</h3>
+          <p>Daily in-house roasting, marble-accented minimalism, and a Kenyan V60 worth the queue in Sharq.</p>
+          <div class="post-meta">Sharq · $$$ · 6 min read</div>
+        </article>
+        <article class="post-card">
+          <div class="post-thumb"><span class="mark">Pause Coffee Roasters</span></div>
+          <div class="post-cat">Outlet review</div>
+          <h3>Pause Coffee Roasters is quietly the best pour-over in Sharq</h3>
+          <p>Ethiopian V60s, Colombian cold brew, and a barista team that talks extraction like it matters. It does.</p>
+          <div class="post-meta">Sharq · $$$ · 5 min read</div>
+        </article>
+        <article class="post-card">
+          <div class="post-thumb"><span class="mark">Earth Roastery</span></div>
+          <div class="post-cat">Outlet review</div>
+          <h3>Earth Roastery's Al Bidea space is a masterclass in raw-concrete calm</h3>
+          <p>Direct-sourced beans, ethically-focused sourcing, and a room built for slow mornings.</p>
+          <div class="post-meta">Al Bidea · $$$ · 4 min read</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="neighbourhoods">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Explore by neighbourhood</h2>
+        <a class="view-all" onclick="goTo('home','directory')">Full map</a>
+      </div>
+      <div class="nb-strip">
+        <button class="nb-chip active">Shuwaikh Industrial</button>
+        <button class="nb-chip">Sharq</button>
+        <button class="nb-chip">Salmiya</button>
+        <button class="nb-chip">Jabriya</button>
+        <button class="nb-chip">Ardiya</button>
+        <button class="nb-chip">Mirqab</button>
+        <button class="nb-chip">Jibla</button>
+        <button class="nb-chip">Al Faiha</button>
+        <button class="nb-chip">Hawally</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="directory">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>The directory</h2>
+        <a class="view-all" onclick="goTo('submit')">Suggest an outlet</a>
+      </div>
+      <div class="directory-tools">
+        <select id="filterArea"><option value="">All neighbourhoods</option></select>
+        <select id="filterTier">
+          <option value="">All price tiers</option>
+          <option value="$">$ — budget</option>
+          <option value="$$">$$ — mid</option>
+          <option value="$$$">$$$ — premium</option>
+        </select>
+        <select id="filterFormat"><option value="">All formats</option></select>
+      </div>
+      <table id="directoryTable">
+        <thead>
+          <tr><th>Brand</th><th>Neighbourhood</th><th>Format</th><th>Price</th><th>Known for</th></tr>
+        </thead>
+        <tbody id="directoryBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="roasters">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Roaster spotlight</h2>
+        <a class="view-all">All spotlights</a>
+      </div>
+      <div class="spotlight">
+        <div class="spotlight-visual"></div>
+        <div class="spotlight-body">
+          <div class="kicker">Roaster spotlight · ORU Roasters</div>
+          <h3>From wholesale to retail: how ORU built a bean list that names its farms</h3>
+          <p>Started in 2018 supplying cafés, restaurants and hotels, ORU now roasts named single-origin lots — Colombia Supremo, Ethiopia Yirgacheffe Idido, Alta Mogiana Brazil — alongside signature blends, plus Japanese filter boxes and a home subscription service.</p>
+          <a class="btn btn-outline">Read the interview</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- REVIEW VIEW -->
+<!-- ============================================================ -->
+<div class="view" id="view-review">
+  <article>
+    <div class="article-wrap">
+      <div class="breadcrumb"><a onclick="goTo('review')">Reviews</a> &nbsp;/&nbsp; <a onclick="goTo('home','directory')">Sharq</a> &nbsp;/&nbsp; Vol.1 Roast Lab</div>
+
+      <div class="article-hero">
+        <div class="post-cat">Outlet review</div>
+        <h1>Inside Vol.1's Mariam Tower roast lab, where the cereal cold brew has a cult following</h1>
+        <p class="lede">Daily in-house roasting, marble-accented minimalism, and a Kenyan V60 worth the queue — Vol.1 Roast Lab is the flagship that put Sharq on Kuwait's specialty coffee map.</p>
+      </div>
+
+      <div class="meta-row">
+        <div><span class="label">Neighbourhood</span><span class="value">Sharq, Mariam Tower</span></div>
+        <div><span class="label">Price tier</span><span class="value">$$$</span></div>
+        <div><span class="label">Format</span><span class="value">Micro-roastery + Café</span></div>
+        <div><span class="label">Visited</span><span class="value">September 2026</span></div>
+        <div><span class="label">Written by</span><span class="value">Alex Mwangi</span></div>
+      </div>
+
+      <div class="hero-image">
+        <div class="ring"></div>
+        <div class="ring r2"></div>
+        <span class="mark">Vol.1 Roast Lab — Mariam Tower</span>
+      </div>
+      <p class="caption">The flagship space: marble counters, daily roasting on view, and a queue that starts before opening.</p>
+
+      <div class="body-copy">
+        <p>There's a specific kind of quiet that settles over Vol.1's Mariam Tower location around 8am — the espresso machine warming up, the roaster ticking through its first batch of the day, regulars filing in before the Sharq business crowd arrives. This is the flagship, and it earns the title.</p>
+
+        <h2>The space</h2>
+        <p>Marble accents, glass-walled roasting visible from the counter, and a layout that manages to feel both minimal and warm — a balance a lot of Kuwait's newer specialty cafés reach for and few actually land. Seating is limited enough that this isn't a laptop café, which feels intentional: this is a coffee-first room.</p>
+
+        <div class="pull-quote">
+          <p>"The cereal cold brew shouldn't work on paper. It works completely in the cup."</p>
+          <span>— tasting note, first visit</span>
+        </div>
+
+        <h2>The coffee</h2>
+        <p>The single-origin program rotates, but the Kenyan V60 on our visit was the clear standout — bright, structured acidity with a long finish that held up even as the cup cooled. The house espresso is tuned for the region's preference for slightly sweeter shots, and it's a smart call: approachable without dulling the underlying bean quality.</p>
+        <p>The much-discussed cereal cold brew is a genuine signature drink rather than a gimmick — worth ordering even if it sounds like a novelty on the menu.</p>
+
+        <h2>The verdict</h2>
+      </div>
+
+      <div class="verdict">
+        <div>
+          <div class="score">4.6</div>
+          <div class="score-label">out of 5</div>
+        </div>
+        <div class="verdict-text">
+          <strong>Worth the trip, worth the queue.</strong> A flagship that actually earns the word — come for the Kenyan V60, stay for the roasting theatre. Best for a slow morning rather than a quick grab-and-go.
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>Good to know</h3>
+        <div class="info-grid">
+          <div><div class="k">Best for</div><div class="v">Slow mornings, coffee discovery</div></div>
+          <div><div class="k">Seating</div><div class="v">Limited — not laptop-friendly</div></div>
+          <div><div class="k">Standout order</div><div class="v">Kenyan V60 · Cereal cold brew</div></div>
+          <div><div class="k">Also try</div><div class="v">Vol.1 — Downtown Tower (quieter branch)</div></div>
+        </div>
+      </div>
+
+      <div class="tags">
+        <a href="#">Sharq</a>
+        <a href="#">Roastery-led</a>
+        <a href="#">Pour-over</a>
+        <a href="#">Premium</a>
+        <a href="#">Local Legend</a>
+      </div>
+    </div>
+  </article>
+
+  <section class="related">
+    <div class="wrap">
+      <h2 style="font-size:22px;margin-bottom:26px;">Related outlets</h2>
+      <div class="related-grid">
+        <div class="related-card">
+          <div class="thumb"><span>Pause Coffee Roasters</span></div>
+          <h4>Pause Coffee Roasters is quietly the best pour-over in Sharq</h4>
+          <p>Sharq · $$$</p>
+        </div>
+        <div class="related-card">
+          <div class="thumb"><span>Richards Coffee</span></div>
+          <h4>Richards Coffee's Al Hamra branch and its Ethiopian beans</h4>
+          <p>Sharq · $$</p>
+        </div>
+        <div class="related-card">
+          <div class="thumb"><span>20 Grams</span></div>
+          <h4>20 Grams, Sharq: the reliable all-day option</h4>
+          <p>Sharq · $$</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!-- SUBMIT VIEW -->
+<!-- ============================================================ -->
+<div class="view" id="view-submit">
+
+  <section class="intro">
+    <div class="wrap intro-grid">
+      <div>
+        <h1>Get your café listed in Kuwait's specialty coffee directory</h1>
+        <p class="lede2">48° Degrees is read by people actively looking for their next cup — not casual scrollers. A listing puts your café in front of them by neighbourhood, price tier and format, alongside real editorial coverage.</p>
+      </div>
+      <div class="tier-cards">
+        <div class="tier-card">
+          <h3>Basic listing</h3>
+          <div class="price">Free</div>
+          <ul>
+            <li>Name, location, price tier &amp; format</li>
+            <li>Appears in directory search</li>
+            <li>One photo</li>
+          </ul>
+        </div>
+        <div class="tier-card featured">
+          <span class="badge">Most chosen</span>
+          <h3>Featured listing</h3>
+          <div class="price">15 KD<span> / month</span></div>
+          <ul>
+            <li>Everything in Basic</li>
+            <li>Priority placement in directory &amp; neighbourhood pages</li>
+            <li>Up to 6 photos + full description</li>
+            <li>Eligible for review coverage &amp; roaster spotlights</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <div class="wrap">
+      <div class="form-shell">
+
+        <div class="stepper" id="stepper">
+          <div class="step active" data-step="1"><div class="num">1</div><div class="step-label">Outlet details</div></div>
+          <div class="step" data-step="2"><div class="num">2</div><div class="step-label">Location &amp; hours</div></div>
+          <div class="step" data-step="3"><div class="num">3</div><div class="step-label">Coffee &amp; pricing</div></div>
+          <div class="step" data-step="4"><div class="num">4</div><div class="step-label">Photos</div></div>
+          <div class="step" data-step="5"><div class="num">5</div><div class="step-label">Review &amp; submit</div></div>
+        </div>
+
+        <div class="form-body step-panel" data-panel="1">
+          <h2>Outlet details</h2>
+          <p class="form-sub">Tell us who you are — this is what readers will see first.</p>
+          <div class="field">
+            <label>Café / roastery name</label>
+            <input type="text" placeholder="e.g. Vol.1 Roast Lab">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Format</label>
+              <select>
+                <option>Café</option>
+                <option>Roastery</option>
+                <option>Roastery + Café</option>
+                <option>Roastery Kiosk</option>
+                <option>Bakery-Café Hybrid</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Instagram handle</label>
+              <input type="text" placeholder="@yourcafe">
+            </div>
+          </div>
+          <div class="field">
+            <label>Short description</label>
+            <textarea placeholder="What makes this place worth a visit? 2–3 sentences."></textarea>
+            <div class="hint">This appears on your listing card and in search results.</div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline" disabled>Back</button>
+            <button class="btn btn-solid next-btn">Continue</button>
+          </div>
+        </div>
+
+        <div class="form-body step-panel" data-panel="2" style="display:none;">
+          <h2>Location &amp; hours</h2>
+          <p class="form-sub">So readers know exactly where to find you.</p>
+          <div class="field-row">
+            <div class="field">
+              <label>Neighbourhood</label>
+              <select>
+                <option>Shuwaikh Industrial</option>
+                <option>Sharq</option>
+                <option>Salmiya</option>
+                <option>Jabriya</option>
+                <option>Ardiya</option>
+                <option>Mirqab</option>
+                <option>Jibla</option>
+                <option>Al Faiha</option>
+                <option>Hawally</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Building / mall (if applicable)</label>
+              <input type="text" placeholder="e.g. Mariam Tower">
+            </div>
+          </div>
+          <div class="field">
+            <label>Full address</label>
+            <input type="text" placeholder="Street, block, area">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Opening hours</label>
+              <input type="text" placeholder="e.g. Daily 7am – 11pm">
+            </div>
+            <div class="field">
+              <label>Open 24 hours?</label>
+              <select><option>No</option><option>Yes</option></select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline back-btn">Back</button>
+            <button class="btn btn-solid next-btn">Continue</button>
+          </div>
+        </div>
+
+        <div class="form-body step-panel" data-panel="3" style="display:none;">
+          <h2>Coffee &amp; pricing</h2>
+          <p class="form-sub">Helps us place you correctly in the directory filters.</p>
+          <div class="field-row">
+            <div class="field">
+              <label>Price tier</label>
+              <select>
+                <option>$ — budget</option>
+                <option>$$ — mid</option>
+                <option>$$$ — premium</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Roasting</label>
+              <select>
+                <option>We roast in-house</option>
+                <option>We use a third-party roaster</option>
+                <option>Not applicable</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Bean origins you'd like featured (optional)</label>
+            <input type="text" placeholder="e.g. Ethiopia Yirgacheffe, Colombia Supremo">
+            <div class="hint">Only include origins you can confirm — we fact-check listings.</div>
+          </div>
+          <div class="field">
+            <label>Signature drink or bean</label>
+            <input type="text" placeholder="What should readers order first?">
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline back-btn">Back</button>
+            <button class="btn btn-solid next-btn">Continue</button>
+          </div>
+        </div>
+
+        <div class="form-body step-panel" data-panel="4" style="display:none;">
+          <h2>Photos</h2>
+          <p class="form-sub">Basic listings get one photo · Featured listings get up to six.</p>
+          <div class="photo-drop">
+            <strong>Drag photos here, or click to upload</strong>
+            JPG or PNG, at least 1200px wide, max 10MB each
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline back-btn">Back</button>
+            <button class="btn btn-solid next-btn">Continue</button>
+          </div>
+        </div>
+
+        <div class="form-body step-panel" data-panel="5" style="display:none;">
+          <h2>Review &amp; submit</h2>
+          <p class="form-sub">Double-check the details below — we'll email you once your listing is live.</p>
+          <div class="review-summary">
+            <div class="row"><span class="k">Name</span><span class="v">—</span></div>
+            <div class="row"><span class="k">Neighbourhood</span><span class="v">—</span></div>
+            <div class="row"><span class="k">Format</span><span class="v">—</span></div>
+            <div class="row"><span class="k">Price tier</span><span class="v">—</span></div>
+            <div class="row"><span class="k">Listing type</span><span class="v">Basic (free)</span></div>
+          </div>
+          <div class="field">
+            <label>Contact email</label>
+            <input type="email" placeholder="you@yourcafe.com">
+          </div>
+          <div class="field">
+            <label>Contact phone / WhatsApp</label>
+            <input type="text" placeholder="+965 ...">
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-outline back-btn">Back</button>
+            <button class="btn btn-solid" id="submitBtn">Submit listing</button>
+          </div>
+        </div>
+
+        <div class="success-panel" data-panel="success" style="display:none;">
+          <div class="mark2">✓</div>
+          <h2>Submission received</h2>
+          <p>We review new listings within 3–5 business days. You'll get an email once yours is live in the directory — or if we need anything else from you first.</p>
+          <button class="btn btn-outline" onclick="resetSubmitForm()">Submit another outlet</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER (shared) -->
+<!-- ============================================================ -->
+<footer id="about">
+  <div class="wrap footer-grid">
+    <div>
+      <h3>48° Degrees</h3>
+      <p>An independent guide to specialty coffee in Kuwait — reviews, roaster interviews and a living directory, written by people who actually drink the coffee.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Your email">
+        <button>Subscribe</button>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h4>Explore</h4>
+      <a onclick="goTo('review')">Reviews</a>
+      <a onclick="goTo('home','directory')">Directory</a>
+      <a onclick="goTo('home','neighbourhoods')">Neighbourhoods</a>
+      <a onclick="goTo('home','roasters')">Roasters</a>
+    </div>
+    <div class="foot-col">
+      <h4>For cafés &amp; roasters</h4>
+      <a onclick="goTo('submit')">Get listed</a>
+      <a onclick="goTo('submit')">Featured placement</a>
+      <a onclick="goTo('submit')">Submit a correction</a>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>Prototype build — content for illustration, not yet published.</span>
+    <span>Kuwait City</span>
+  </div>
+</footer>
+
+<script>
+  /* ---------- View routing ---------- */
+  function goTo(view, scrollToId){
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.getElementById("view-" + view).classList.add("active");
+    window.scrollTo({top:0});
+    window.location.hash = view;
+    if(scrollToId){
+      setTimeout(() => {
+        const el = document.getElementById(scrollToId);
+        if(el) el.scrollIntoView({behavior:"smooth"});
+      }, 50);
+    }
+  }
+  window.addEventListener("DOMContentLoaded", () => {
+    const initial = (window.location.hash || "#home").replace("#","");
+    if(["home","review","submit"].includes(initial)) goTo(initial);
+  });
+
+  /* ---------- Directory data + filters (home view) ---------- */
+  const outlets = [
+    ["48 East Roastery","Salmiya","Roastery + Café","$$$","Curated brew bar and bagged roasts"],
+    ["48 East Roastery","Shuwaikh Industrial","Roastery + Café","$$$","Ethiopian, Colombian, Brazilian single-origin"],
+    ["Air Roastery","Shuwaikh Industrial","Roastery + Brew Bar","$$","Curated single-origin, sensory-led brewing"],
+    ["Altitude Roasters","Shuwaikh Industrial","Café","$$$","Precise brews, sourcing consultations"],
+    ["Aroma Roastery","Shuwaikh Industrial","Roastery + Café","$$$","Smooth, understated specialty brews"],
+    ["Beans Roastery","Shuwaikh Industrial","Roastery","$$","No-frills house-roasted beans"],
+    ["BonVein","Ardiya","Bakery-Café Hybrid","$$$","Pastries paired with local roasters' coffee"],
+    ["Boost Coffee","Mirqab","Café","$$$","Meticulous brews, minimalist design"],
+    ["Boost Coffee","Salmiya","Café","$$$","Weekend-friendly neighbourhood spot"],
+    ["Earth Roastery","Al Bidea","Roastery + Café","$$$","Direct-sourced, ethically-focused beans"],
+    ["Forest Botanical Coffee House","Bnied Al-Gar","Café (24h)","$$$","Plant-filled, late-night work space"],
+    ["Good Day","Ardiya","Café / All-day dining","$$$","Breakfast, vegan options, family-friendly"],
+    ["Good Day","Sharq","Café / All-day dining","$$$","Spanish lattes, generous breakfast menu"],
+    ["Kaffa Specialty Coffee","Sharq","Café","$$$","Origin-driven brews, skilled pour-overs"],
+    ["Mazj Coffee Roasters","Al Faiha","Roastery + Café","$$","Freshly roasted single-origin, minimalist"],
+    ["Mug Coffee And Roastery","Jabriya","Roastery + Café","$$","24/7 drive-thru, single-origin V60s"],
+    ["Mug Coffee And Roastery","Sharq","Roastery + Café","$$","Single-origin V60s, Spanish lattes"],
+    ["Oru Roasters","Mirqab","Roastery Kiosk","$$","Named single-origin lots: Colombia, Ethiopia"],
+    ["Oru Roasters","Shuwaikh Industrial","Roastery + Café","$$","Tailored coffee experiences, custom roasting"],
+    ["Pause Coffee Roasters","Sharq","Roastery + Café","$$$","Ethiopian V60s, Colombian cold brew"],
+    ["POV","Ardiya","Café (24h)","$$$","Visually creative filter brews"],
+    ["Richards Coffee","Sharq","Roastery + Café","$$","Locally praised Ethiopian beans"],
+    ["Richards Coffee","Shuwaikh Industrial","Roastery + Café","$$","In-house roasted, matcha and bagels"],
+    ["Roots Roastery","Shuwaikh Industrial","Roastery","$$","Converted warehouse, coffee education"],
+    ["Space Cafe","Jibla","Café","$$","Well-rounded espresso, playful drinks"],
+    ["Stockroom Coffee","Sharq","Café","$$","Business-district coffee reset"],
+    ["Stockroom Coffee","Shuwaikh Industrial","Roastery","$$","Bean buying, cupping, coffee-first"],
+    ["Tamper Coffee","Shuwaikh Industrial","Café","$$$","Spanish and saffron lattes, bakery-forward"],
+    ["The Backburner","Sharq","Café","$$$","Single-origin espresso, weekend brunch"],
+    ["The Coffee Department","Sharq","Café","$$","Specialty espresso in Souq Sharq"],
+    ["Vol.1","Shuwaikh Industrial","Café + Roastery","$$$","Roastery-led espresso and filter program"],
+    ["Vol.1 Roast Lab","Sharq","Micro-roastery + Café","$$$","Daily in-house roasting, Kenyan V60"],
+    ["Opt Coffee","Al Soor Gardens","Café","$$","Brazilian single-origin espresso"],
+    ["Opt Coffee","Ardiya","Café","$$","Reliable daily single-origin espresso"],
+    ["Alegria Coffee Roasters","Ardiya","Roastery (Korean import)","$$$","Precision-focused brews"],
+    ["20 Grams","Sharq","Café","$$","Wide espresso range, creative cold brews"],
+    ["20 Grams","Shuwaikh Industrial","Café","$$","Largest branch, generous seating"],
+    ["% Arabica","Shuwaikh Industrial","International Chain","$$","Flagship roastery, on-site training centre"],
+    ["% Arabica","Salmiya","International Chain","$$","Signature single-origin espresso"],
+    ["Toby's Estate","Sharq","Café (Australian import)","$$$","Indoor-garden café, flat whites"],
+  ];
+
+  const tbody = document.getElementById("directoryBody");
+  const areaSel = document.getElementById("filterArea");
+  const tierSel = document.getElementById("filterTier");
+  const formatSel = document.getElementById("filterFormat");
+
+  const areas = [...new Set(outlets.map(o => o[1]))].sort();
+  const formats = [...new Set(outlets.map(o => o[2]))].sort();
+  areas.forEach(a => areaSel.insertAdjacentHTML("beforeend", `<option value="${a}">${a}</option>`));
+  formats.forEach(f => formatSel.insertAdjacentHTML("beforeend", `<option value="${f}">${f}</option>`));
+
+  function renderDirectory(){
+    const area = areaSel.value, tier = tierSel.value, format = formatSel.value;
+    const rows = outlets.filter(o =>
+      (!area || o[1] === area) &&
+      (!tier || o[3] === tier) &&
+      (!format || o[2] === format)
+    );
+    tbody.innerHTML = rows.map(o => `
+      <tr>
+        <td class="brand-cell">${o[0]}</td>
+        <td>${o[1]}</td>
+        <td>${o[2]}</td>
+        <td><span class="tier">${o[3]}</span></td>
+        <td>${o[4]}</td>
+      </tr>
+    `).join("");
+  }
+  [areaSel, tierSel, formatSel].forEach(sel => sel.addEventListener("change", renderDirectory));
+  renderDirectory();
+
+  document.querySelectorAll(".nb-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      document.querySelectorAll(".nb-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      areaSel.value = chip.textContent.trim();
+      renderDirectory();
+      document.getElementById("directory").scrollIntoView({behavior:"smooth"});
+    });
+  });
+
+  /* ---------- Submission stepper (submit view) ---------- */
+  let current = 1;
+  const total = 5;
+  function showStep(n){
+    document.querySelectorAll(".step-panel").forEach(p => p.style.display = "none");
+    document.querySelector(`[data-panel="${n}"]`).style.display = "block";
+    document.querySelectorAll("#stepper .step").forEach(s => {
+      const step = parseInt(s.dataset.step);
+      s.classList.remove("active","done");
+      if(step === n) s.classList.add("active");
+      else if(step < n) s.classList.add("done");
+    });
+  }
+  document.querySelectorAll(".next-btn").forEach(btn => {
+    btn.addEventListener("click", () => { if(current < total){ current++; showStep(current);} });
+  });
+  document.querySelectorAll(".back-btn").forEach(btn => {
+    btn.addEventListener("click", () => { if(current > 1){ current--; showStep(current);} });
+  });
+  document.getElementById("submitBtn").addEventListener("click", () => {
+    document.querySelectorAll(".step-panel").forEach(p => p.style.display = "none");
+    document.getElementById("stepper").style.display = "none";
+    document.querySelector('[data-panel="success"]').style.display = "block";
+  });
+  function resetSubmitForm(){
+    current = 1;
+    document.getElementById("stepper").style.display = "flex";
+    document.querySelector('[data-panel="success"]').style.display = "none";
+    showStep(1);
+  }
+</script>
+
+</body>
+</html>
